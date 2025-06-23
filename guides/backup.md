@@ -5,6 +5,7 @@
 1. **啟動指令**
    - CLI 透過 [`backup`](../medusa/medusacli.py#L120-L141) 呼叫 [`handle_backup`](../medusa/backup_node.py#L78-L137) 並解析參數。
    - 未指定 `--backup-name` 時會以當前時間產生名稱。
+   - 實際名稱在 [`medusacli.py`](../medusa/medusacli.py#L138-L141) 取得後傳遞給 `handle_backup`，接著由 [`storage.get_node_backup`](../medusa/storage/__init__.py#L108-L116) 建立 [`NodeBackup`](../medusa/storage/node_backup.py#L44-L58) 物件，組成 `<prefix>/<fqdn>/<backup_name>/` 路徑。
    - `handle_backup` 會建立一個臨時檔案標記，以避免同一節點同時執行多個備份。
 
 2. **初始化與前置作業**
@@ -22,6 +23,7 @@
    - 在 *完整備份* 模式下則會將所有檔案複製到儲存空間。
    - 需要重複上傳或已存在檔案的判斷邏輯位於 [`check_already_uploaded`](../medusa/backup_node.py#L365-L405)。
    - 每個表的備份結果（檔案路徑、MD5 及大小）會加入 manifest。
+   - 最終檔案會呼叫 S3 儲存驅動於 [`_upload_file`](../medusa/storage/s3_base_storage.py#L386-L398)，以 `<prefix>/<fqdn>/<backup_name>/...` 做為 object key 送至 S3。
 
 5. **完成備份**
    - 若為 DSE，`do_backup` 會另外呼叫 `create_dse_snapshot()` 處理 DSE snapshot 的備份。
