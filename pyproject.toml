@@ -38,8 +38,6 @@ include = [
     { path = "medusa-example.ini" }
 ]
 
-[project]
-requires-python = ">=3.9.2,<=3.12"
 
 [tool.poetry.scripts]
 medusa = { reference = "medusa.medusacli:cli", type = "console" }
