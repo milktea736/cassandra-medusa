@@ -658,11 +658,10 @@ class Cassandra(object):
             self.replace_tokens_in_cassandra_yaml_and_disable_bootstrap(token_list)
             cmd = '{}'.format(' '.join(shlex.quote(x) for x in self._start_cmd))
             logging.debug('Starting Cassandra with {}'.format(cmd))
-            # run the command using 'shell=True' option
-            # to interpret the string command well
-            subprocess.check_output(cmd, shell=True)
+            # avoid using shell=True when executing the command
+            subprocess.check_output(cmd, shell=False)
         else:
-            subprocess.check_output(self._start_cmd, shell=True)
+            subprocess.check_output(self._start_cmd, shell=False)
 
     def replace_tokens_in_cassandra_yaml_and_disable_bootstrap(self, token_list):
         initial_token_line_found = False
